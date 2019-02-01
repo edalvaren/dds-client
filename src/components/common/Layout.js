@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -16,24 +16,32 @@ const styles = theme => ({
     },
 });
 
-function FullWidthGrid(props) {
-    const { classes } = props;
+class MainLayout extends React.Component {
+    state = {userLoggedIn: false};
 
-    return (
-        <div className={classes.root}>
-        <NavMenu/>
-            <Grid container spacing={24}>
-                <Grid item xs={12}>
-                    {props.children}
+    render() {
+        const { classes } = this.props;
+        const renderNavMenu = (
+            <NavMenu/>
+        );
+        return (
+            <div className={classes.root}>
+                {renderNavMenu}
+                <Grid container spacing={24}>
+                    <Grid item xs={12}>
+
+                        {this.props.children}
+
+                    </Grid>
+
                 </Grid>
-
-            </Grid>
-        </div>
-    );
+            </div>
+        );
+    }
 }
 
-FullWidthGrid.propTypes = {
+MainLayout.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(FullWidthGrid);
+export default withStyles(styles)(MainLayout);
