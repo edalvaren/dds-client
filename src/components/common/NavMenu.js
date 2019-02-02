@@ -86,13 +86,20 @@ const styles = theme => ({
 });
 
 class PrimarySearchAppBar extends React.Component {
-    state = {
-        anchorEl: null,
-        mobileMoreAnchorEl: null,
+    constructor(props){
+        super(props);
+        this.state = {
+            anchorEl: null,
+            mobileMoreAnchorEl: null,
     };
+}
 
     handleMenuOpen = event => {
         this.setState({anchorEl: event.currentTarget});
+    }
+
+    handleSearchChanged = event => {
+
     }
 
     handleProfileMenuOpen = event => {
@@ -115,6 +122,7 @@ class PrimarySearchAppBar extends React.Component {
     render() {
         const { anchorEl, mobileMoreAnchorEl } = this.state;
         const { classes } = this.props;
+        const {handleQuery} = this.props.handleSearchChanged;
         const isMenuOpen = Boolean(anchorEl);
         const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -167,7 +175,7 @@ class PrimarySearchAppBar extends React.Component {
                 <AppBar position="static">
                     <Toolbar>
                         <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
-                            <MenuIcon onClick={this.handleMenuOpen} />
+                            <MenuIcon/>
                         </IconButton>
                         <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                             Spiral Docs
@@ -177,6 +185,7 @@ class PrimarySearchAppBar extends React.Component {
                                 <SearchIcon />
                             </div>
                             <InputBase
+                                onChange={handleQuery}
                                 placeholder="Search…"
                                 classes={{
                                     root: classes.inputRoot,
@@ -217,6 +226,7 @@ class PrimarySearchAppBar extends React.Component {
 
 PrimarySearchAppBar.propTypes = {
     classes: PropTypes.object.isRequired,
+    handleSearchChanged: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(PrimarySearchAppBar);

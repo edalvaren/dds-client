@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
-import NavMenu from './NavMenu'
 
 const styles = theme => ({
     root: {
@@ -21,12 +20,12 @@ class MainLayout extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const renderNavMenu = (
-            <NavMenu/>
-        );
+        // const renderNavMenu = (
+        //     <NavMenu/>
+        // );
         return (
             <div className={classes.root}>
-                {renderNavMenu}
+                {/*{renderNavMenu}*/}
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
 
