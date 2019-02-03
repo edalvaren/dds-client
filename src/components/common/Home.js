@@ -7,6 +7,7 @@ import Users from '../users/UsersTable';
 // import SingleLineGrid from '../SingleLineGrid';
 import NavMenu from './NavMenu'
 import Button from '@material-ui/core/Button';
+import SearchTable from '../search/searchTable';
 
 const styles = theme => ({
     root: {
@@ -42,7 +43,7 @@ class Home extends Component {
     static displayName = Home.name;
     constructor(props){
         super(props);
-        this.state = {searchTable: false , value: '', docs: [], loading: true, searchQuery: '', loadSearch: false };
+        this.state = {isSearchTable: false , value: '', docs: [], loading: true, searchQuery: '', loadSearch: false };
         this.navRef = React.createRef();
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeTable = this.handleChangeTable.bind(this);
@@ -51,35 +52,46 @@ class Home extends Component {
 
     handleButton() {
         this.setState({
-            searchTable: false
-        });
+            isSearchTable: false
+    });
+        alert("show search");
+
     }
 
 
 
-        handleChangeTable(event) {
-            alert("works");
-        this.setState({searchTable: true});
+    handleChangeTable(event) {
+        event.preventDefault();
+            alert("show users");
+        this.setState({isSearchTable: true});
     }
 
     handleChange(event){
         event.preventDefault();
-        alert("works?");
         // this.setState({ searchQuery: event.target.value });
     }
 
 
     render() {
+        /*  If the Search table is currently showing. the button says "show Users"
+           * If the  */
         const { classes } = this.props;
+        const isSearch = this.state.isSearchTable;
+        let renderedTable;
+        let button;
+        if(isSearch) {
+            button = <Button onClick={this.handleButton}> Show Search</Button>;
+            renderedTable = <Users/>
+        } else {
+            button = <Button onClick={this.handleChangeTable}> Show Users </Button>
+            renderedTable = <SearchTable/>
+        }
         return (
             <Grid item xs={12}>
                 <NavMenu ref={this.navRef} handleSearchChanged={this.handleChange} />
-                    {/*<img className={classes.mainImage} src="https://spiraldocs.blob.core.windows.net/spiraldocs/dds-lg.jpg" alt="background" />*/}
-                <Button type='button' color="primary" handleClick={this.handleChangeTable}>
-                    Click Here
-                </Button>
+                {button}
                     <div className={classes.paper}>
-                    <Users/>
+                        {renderedTable}
                 </div>
             </Grid>
         );

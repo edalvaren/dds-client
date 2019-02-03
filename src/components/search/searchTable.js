@@ -27,6 +27,7 @@ class SearchTable extends React.Component {
     options = {
         responsive: 'scroll',
         serverSide: true,
+        resizableColumns: true
     };
 
 
@@ -35,7 +36,7 @@ class SearchTable extends React.Component {
 
         return (
             <div>
-                <Get url="http://localhost:5000/api/search/" params={{searchQuery: "surging"}}>
+                <Get url="http://localhost:5000/api/search/search" params={{searchQuery: "roger"}}>
                     {(error, response, isLoading, makeRequest) => {
                         if(error) {
                             return (<div>Something bad happened: {error.message} <button onClick={() => makeRequest({ params: { reload: true } })}>Retry</button></div>)
