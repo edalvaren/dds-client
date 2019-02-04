@@ -8,7 +8,6 @@ export const Theme = createMuiTheme({
         secondary: {
             main: '#b71c1c',
             contrastText: '#ffcc00',
-
         },
     },
     typography: {

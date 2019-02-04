@@ -14,6 +14,8 @@ import FolderIcon from '@material-ui/icons/FolderShared'
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import Downshift from 'downshift';
+
 
 const styles = theme => ({
     root: {
@@ -94,11 +96,14 @@ class PrimarySearchAppBar extends React.Component {
     };
 }
 
-    handleMenuOpen = event => {
-        this.setState({anchorEl: event.currentTarget});
+    handleSubmitSearch = event => {
+        this.props.searching(true);
+        alert(this.props.searching)
     }
 
     handleSearchChanged = event => {
+        // this.setState({searchQuery: event.target.value});
+        this.props.onSearchChanged(event.target.value);
 
     }
 
@@ -120,9 +125,9 @@ class PrimarySearchAppBar extends React.Component {
     };
 
     render() {
+        const searchQuery = this.props.searchQuery;
         const { anchorEl, mobileMoreAnchorEl } = this.state;
         const { classes } = this.props;
-        const {handleQuery} = this.props.handleSearchChanged;
         const isMenuOpen = Boolean(anchorEl);
         const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -182,10 +187,11 @@ class PrimarySearchAppBar extends React.Component {
                         </Typography>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
-                                <SearchIcon />
+                                <SearchIcon onClick={this.handleSubmitSearch} />
                             </div>
                             <InputBase
-                                onChange={handleQuery}
+                                onChange={this.handleSearchChanged}
+                                value={searchQuery}
                                 placeholder="Search…"
                                 classes={{
                                     root: classes.inputRoot,
@@ -226,7 +232,6 @@ class PrimarySearchAppBar extends React.Component {
 
 PrimarySearchAppBar.propTypes = {
     classes: PropTypes.object.isRequired,
-    handleSearchChanged: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(PrimarySearchAppBar);

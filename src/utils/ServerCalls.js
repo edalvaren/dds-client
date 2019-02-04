@@ -12,6 +12,17 @@ const unpack = (x) => {
 
 }
 
+
+/**
+ * @return {string}
+ */
+export function DecodeStringWithTrailing(base64String) {
+    var stringLength = base64String.length - 1;
+    var noTrail = base64String.substring(0, stringLength);
+
+    return atob(noTrail);
+}
+
 export const apiRequest = () => {
     return new Promise((resolve, reject) => {
         fetch('http://localhost:5000/api/spiralusers/')

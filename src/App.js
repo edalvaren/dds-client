@@ -3,6 +3,7 @@ import './App.scss';
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { Theme } from './utils/theme';
 import { Route } from 'react-router';
+import Tools from './components/tools';
 
 /* Common Components */
 import Layout from './components/common/Layout';
@@ -16,7 +17,7 @@ class App extends Component {
         <MuiThemeProvider theme={Theme}>
         <Layout>
           <Route exact path='/login' component={Login} />
-          <Route exact path='/' component={Home} />
+          <Route path='/' component={Home} />
         </Layout>
 
         </MuiThemeProvider>

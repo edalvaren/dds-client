@@ -12,13 +12,13 @@ class UsersTable extends React.Component {
         users: []
     };
 
-    componentDidMount() {
-        fetch("http://localhost:5000/api/spiralusers/")
-            .then(response => response.json())
-            .then(data => {
-                this.setState({users: data})
-            });
-    }
+    // componentDidMount() {
+    //     fetch("http://localhost:5000/api/spiralusers/")
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             this.setState({users: data})
+    //         });
+    // }
 
 
     columns = ["Name", "Email" , "Team"];
@@ -49,8 +49,10 @@ class UsersTable extends React.Component {
                                 arr.push(user.email);
                                 arr.push(user.firstName.concat(' ', user.lastName));
                                 arr.push(user.team);
-                                newArr.push(arr)
+                                newArr.push(arr);
+                                this.setState({users: newArr});
                             });
+
                           return( <MUIDataTable title={"Site Users"} data={newArr} columns={this.columns} options={this.options} />)
                         }
                         return (<div>Default message before request is made.</div>)
@@ -62,3 +64,4 @@ class UsersTable extends React.Component {
 }
 
 export default UsersTable;
+

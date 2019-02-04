@@ -2,12 +2,15 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import {flexbox} from '@material-ui/system';
-import Users from '../users/UsersTable';
-// import SingleLineGrid from '../SingleLineGrid';
 import NavMenu from './NavMenu'
-import Button from '@material-ui/core/Button';
 import SearchTable from '../search/searchTable';
+import ContainedButtons from "./containedButtons";
+import StepperControl from '../tools/steppers'
+import ProjectTool from '../tools/index';
+
+import {debounce} from 'lodash';
+
+const mainImageUrl = "https://spiraldocs.blob.core.windows.net/spiraldocs/dds-lg.jpg";
 
 const styles = theme => ({
     root: {
@@ -43,32 +46,72 @@ class Home extends Component {
     static displayName = Home.name;
     constructor(props){
         super(props);
-        this.state = {isSearchTable: false , value: '', docs: [], loading: true, searchQuery: '', loadSearch: false };
+        this.state = {isSearchTable: true ,
+            typing: false, typingTimeout: 0, loading: true,
+            searchQuery: '', loadSearch: false,
+            pageToLoad: 0};
         this.navRef = React.createRef();
-        this.handleChange = this.handleChange.bind(this);
-        this.handleChangeTable = this.handleChangeTable.bind(this);
-        this.handleButton = this.handleButton.bind(this);
+        this.docSearchTable = React.createRef();
+        this.goToHome = this.goToHome.bind(this);
+        this.goToTools = this.goToTools.bind(this);
+        this.handleSearchChanged = this.handleSearchChanged.bind(this);
+        this.updateQuery = this.updateQuery.bind(this);
+    }
+    componentDidMount() {
+        this.hydrateWithLocalStorage();
+        window.addEventListener(
+            "beforeunload",
+            this.saveStateToLocalStorage.bind(this)
+        );
     }
 
-    handleButton() {
+    saveStateToLocalStorage() {
+        // for every item in React state
+        for (let key in this.state) {
+            // save to localStorage
+            localStorage.setItem(key, JSON.stringify(this.state[key]));
+        }
+    }
+
+    hydrateWithLocalStorage() {
+        for (let key in this.state) {
+            if (localStorage.hasOwnProperty(key)) {
+                let value = localStorage.getItem(key);
+                try {
+                    value = JSON.parse(value);
+                    this.setState({[key]: value});
+                } catch (e) {
+                    // handle empty string
+                    this.setState({[key]: value});
+                }
+            }
+        }
+    }
+    goToTools() {
         this.setState({
-            isSearchTable: false
+            pageToLoad: 1
+        });
+
+    }
+    goToHome() {
+        this.setState({
+            pageToLoad: 0
     });
-        alert("show search");
 
     }
 
 
+    handleSearchChanged(searchQuery){
+        let debounced = debounce(this.updateQuery, 4000);
 
-    handleChangeTable(event) {
-        event.preventDefault();
-            alert("show users");
-        this.setState({isSearchTable: true});
-    }
-
-    handleChange(event){
-        event.preventDefault();
+        debounced(searchQuery);
+        // this.setState({searchQuery: searchQuery})
         // this.setState({ searchQuery: event.target.value });
+    }
+
+    updateQuery(query){
+        this.setState({searchQuery: query});
+        localStorage.setItem('searchQuery', query);
     }
 
 
@@ -77,22 +120,34 @@ class Home extends Component {
            * If the  */
         const { classes } = this.props;
         const isSearch = this.state.isSearchTable;
-        let renderedTable;
-        let button;
-        if(isSearch) {
-            button = <Button onClick={this.handleButton}> Show Search</Button>;
-            renderedTable = <Users/>
-        } else {
-            button = <Button onClick={this.handleChangeTable}> Show Users </Button>
-            renderedTable = <SearchTable/>
+        const searchQuery = this.state.searchQuery;
+        let content;
+        if(searchQuery.length > 0){
+            content = <SearchTable ref={this.docSearchTable} searchQuery={this.state.searchQuery}/>
         }
+        else{
+            let loadThis = this.state.pageToLoad;
+            content = <div> </div>
+            // switch (loadThis) {
+            //     case 0: content = <div> Hello 0 </div>;
+            //     case 1: content = <div> <ProjectTool/> </div>
+            // }
+            // content = <img src={mainImageUrl} className={classes.mainImage}/>
+        }
+        // if(!isSearch) {
+        //     button = <Button onClick={this.handleButton}> Show Search</Button>;
+        //     renderedTable = <Users/>
+        // } else {
+        //     button = <Button onClick={this.handleChangeTable}> Show Users </Button>
+        //     renderedTable = <SearchTable ref={this.docSearchTable} searchQuery={this.state.searchQuery}/>
+        // }
         return (
             <Grid item xs={12}>
-                <NavMenu ref={this.navRef} handleSearchChanged={this.handleChange} />
-                {button}
-                    <div className={classes.paper}>
-                        {renderedTable}
-                </div>
+                <NavMenu ref={this.navRef} onSearchChanged={this.handleSearchChanged} />
+                <ContainedButtons handleToolsClicked={this.goToTools} handleHomeClicked={this.goToHome}/>
+            <Grid item xs={12}>
+                            {content}
+            </Grid>
             </Grid>
         );
     }
